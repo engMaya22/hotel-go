@@ -1,0 +1,8 @@
+in public we add favicon to use in link index file 
+
+rafce is a shortcut
+
+https://prebuiltui.com/ free components website in tailwind
+export default Navbar; the name i want to use it in other components
+ 
+const isOwnerPath = useLocation().pathname.includes("owner"); check if pass name includes owner
