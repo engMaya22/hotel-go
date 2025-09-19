@@ -10,3 +10,4 @@ const isOwnerPath = useLocation().pathname.includes("owner"); check if pass name
 bg-[url('/src/assets/heroImage.png')]
 
 max-w-md → max-width: 28rem; makes words under each other!
+clerk for auth
