@@ -6,3 +6,7 @@ https://prebuiltui.com/ free components website in tailwind
 export default Navbar; the name i want to use it in other components
  
 const isOwnerPath = useLocation().pathname.includes("owner"); check if pass name includes owner
+
+bg-[url('/src/assets/heroImage.png')]
+
+max-w-md → max-width: 28rem; makes words under each other!
