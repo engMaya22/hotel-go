@@ -39,12 +39,9 @@ const Navbar = () => {
   useEffect(() => {
     if(location.pathname !== "/"){
       setIsScrolled(true);
-      return;
+      return;//exits effect early if not homepage
       
-    }else{
-      setIsScrolled(false);//default
     }
-    setIsScrolled(prev => location.pathname !== "/" ? true : prev)
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
