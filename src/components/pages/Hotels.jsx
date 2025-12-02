@@ -2,8 +2,10 @@ import React from 'react'
 
 const Hotels = () => {
   return (
-    <div>
-      
+    <div >
+      <div>
+        hotels
+      </div>
     </div>
   )
 }
