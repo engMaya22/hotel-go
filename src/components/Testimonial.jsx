@@ -20,7 +20,7 @@ const Testimonial = () => {
         {testimonials.map((testimonial) => (
           <div
             key={testimonial.id}
-            className="bg-white p-6 rounded-xl shadow max-w-xs "
+            className="bg-white p-6 rounded-xl shadow "
           >
             <div className="flex items-center gap-3">
               <img
