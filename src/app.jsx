@@ -5,6 +5,7 @@ import { Route, Routes, useLocation } from 'react-router-dom'
 import Hero from './components/Hero'
 import Home from './components/pages/Home'
 import Hotels from './components/pages/Hotels'
+import Footer from './components/Footer'
 
 export const App = () => {
   const isOwnerPath = useLocation().pathname.includes("owner");
@@ -20,6 +21,7 @@ export const App = () => {
           <Route path='/rooms' element={<Hotels />} />
        </Routes>
      </div>
+     <Footer />
 
 
     </div>

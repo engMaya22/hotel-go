@@ -15,3 +15,20 @@ clerk for auth
 default font in case not passed {`text-4xl md:text-[40px] ${font || "font-playfair"}`}
 
 ${align === 'left' && "md:text-left md:items-start"}`} if align passed left
+
+
+look this array of arrays:       const linkSections = [
+        {
+            title: "Quick Links",
+            links: ["Home", "Best Sellers", "Offers & Deals", "Contact Us", "FAQs"]
+        },
+        {
+            title: "Need Help?",
+            links: ["Delivery Information", "Return & Refund Policy", "Payment Methods", "Track your Order", "Contact Us"]
+        },
+        {
+            title: "Follow Us",
+            links: ["Instagram", "Twitter", "Facebook", "YouTube"]
+        }
+    ];
+    so we need to map ,
