@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { assets, facilityIcons, roomsDummyData } from "../../assets/assets";
+import { assets, facilityIcons, roomsDummyData } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
-import StarRating from "../StarRating";
+import StarRating from "../components/StarRating";
 
 const CheckBox = ({ label, selected = false, onChange = () => {} }) => {
   return (
@@ -151,11 +151,10 @@ const AllRooms = () => {
           <div className="px-5 pt-5 pb-7">
             <p className="pb-2 text-gray-800 font-medium">Sort By</p>
             {sortOptions.map((option, index) => (
-              <RadioButton  key={index} label={option}/>
+              <RadioButton key={index} label={option} />
             ))}
           </div>
         </div>
-        
       </div>
     </div>
   );
