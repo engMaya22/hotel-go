@@ -61,7 +61,7 @@ const AllRooms = () => {
           >
             <img
               onClick={() => {
-                navigate(`rooms/${room._id}`);
+                navigate(`/rooms/${room._id}`);
                 scrollTo(0, 0);
               }}
               src={room.images[0]}
