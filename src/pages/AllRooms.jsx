@@ -133,7 +133,7 @@ const AllRooms = () => {
 
         <div
           className={`${
-            openFilters ? "h-auto" : "h-o lg:h-auto"
+            openFilters ? "h-auto" : "h-0 lg:h-auto"
           } overflow-hidden transition-all duration-700`}
         >
           <div className="px-5 pt-5">

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import {  assets, facilityIcons, roomsDummyData } from "../assets/assets";
+import {  assets, facilityIcons, roomCommonData, roomsDummyData } from "../assets/assets";
 import StarRating from "../components/StarRating";
 
 const RoomDetails = () => {
@@ -112,6 +112,25 @@ const RoomDetails = () => {
               </button>
 
     </form>
+
+    {/* common specifications */}
+    <div className="space-y-4 mt-25 ">
+      {roomCommonData.map((item , index)=>(
+        <div key={index} className="flex items-start gap-2">
+            <img src=  {item.icon} alt={`${item.title}-icon`} className="w-6.5"  />
+            <div>
+                  <p className="text-base">{item.title}</p>
+            <p className="text-gray-500">{item.description}</p>
+            </div>
+          
+        </div>
+
+      ))}
+    </div>
+
+    <div>
+      <p></p>
+    </div>
 
 
   </div>);
