@@ -16,7 +16,7 @@ export const App = () => {
   return (
     <div className="">
       {!isOwnerPath && <Navbar />}
-      <HotelRegister />
+      {false && <HotelRegister />}
 
       <div className="min-h-[70vh]">
         <Routes>
