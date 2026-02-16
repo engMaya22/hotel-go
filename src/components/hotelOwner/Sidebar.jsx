@@ -10,7 +10,7 @@ const Sidebar = () => {
     const sidebarLinks = [
      { name:"Dashboard" ,path:"/owner" , icon:assets.dashboardIcon},
      { name:"Add Room" ,path:"/owner/add-room" , icon:assets.addIcon},
-     { name:"List Room" ,path:"/owner/list-room" , icon:assets.listIcon}
+     { name:"List Room" ,path:"/owner/list-rooms" , icon:assets.listIcon}
     ];
   return (
   <div className="w-16 md:w-64 border-r h-full text-base border-gray-300 pt-4 flex flex-col transition-all duration-300">
