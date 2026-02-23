@@ -10,7 +10,7 @@ const app = express();
 app.use(cors());//enable cross-origin resource sharing
 
 //middleware
-app.use(express.json)//parse to json
+app.use(express.json())//parse to json
 app.use(clerkMiddleware())
 
 //API to listen to clerk webhook
@@ -21,3 +21,5 @@ app.get('/',(req , res)=> res.send("Api is working"))
 const PORT = process.env.PORT || 3000
 
 app.listen(PORT , ()=>console.log(`Server running on port  ${PORT}`))
+
+export default app;
