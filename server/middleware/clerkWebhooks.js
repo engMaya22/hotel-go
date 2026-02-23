@@ -13,7 +13,7 @@ const clerkWebhooks = async (req, res)=>{
         const headers ={
             "svix-id":req.headers['svix-id'],
             "svix-timestamp":req.headers['svix-timestamp'],
-            "svix-signature":req.headers['svix--signature'],
+            "svix-signature":req.headers['svix-signature'],
 
         };
 
@@ -26,7 +26,7 @@ const clerkWebhooks = async (req, res)=>{
         const userData = {
             _id: data.id,
             email: data.email_addresses[0].email_address,
-            user_name: data.firs_name + ''+ data.last_name,
+            user_name: data.first_name  + ''+ data.last_name,
             image : data.image_url
         }
         // switch case for different events
@@ -36,7 +36,7 @@ const clerkWebhooks = async (req, res)=>{
                 break;
             }
             case 'user.updated':{
-               await User.findByIdAndUpdate(data.id._id,userData)
+               await User.findByIdAndUpdate(data.id,userData)
                 break;
             }
                 
