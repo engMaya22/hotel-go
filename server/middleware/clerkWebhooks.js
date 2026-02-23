@@ -7,7 +7,7 @@ const clerkWebhooks = async (req, res)=>{
 
     try{
         //create svix instance with clerk webhook secret
-        const Webhook = new Webhook(process.env.CLERK_WEEBHOOK_SECRET)
+        const Webhook = new Webhook(process.env.CLERK_WEBHOOK_SECRET)
 
         //getting headers
         const headers ={
@@ -18,7 +18,7 @@ const clerkWebhooks = async (req, res)=>{
         };
 
         //verify headers
-        await whook.verify(JSON.stringify(req.body),headers)
+        await webhook .verify(JSON.stringify(req.body),headers)
 
         //getting data from req body
         const{data, type} = req.body
@@ -26,7 +26,7 @@ const clerkWebhooks = async (req, res)=>{
         const userData = {
             _id: data.id,
             email: data.email_addresses[0].email_address,
-            user_name: data.first_name  + ''+ data.last_name,
+            user_name: data.first_name + ' ' + data.last_name
             image : data.image_url
         }
         // switch case for different events
