@@ -22,13 +22,16 @@ const clerkWebhooks = async (req, res)=>{
 
         //getting data from req body
         const{data, type} = req.body
-
+        console.log("data is " , data);
+        console.log("type is " , type);
+        
         const userData = {
             _id: data.id,
             email: data.email_addresses[0].email_address,
             user_name: data.first_name + ' ' + data.last_name,
             image : data.image_url
         }
+
         // switch case for different events
         switch (type) {
             case 'user.created':{
