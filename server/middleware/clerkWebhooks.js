@@ -16,6 +16,7 @@ const clerkWebhooks = async (req, res) => {
 
         // Debug: check headers received
         console.log("Headers received:", headers);
+        console.log("DB URL is", `${process.env.MONGODB_URI}/hotel-go`);
 
         await whook.verify(JSON.stringify(req.body), headers)
 

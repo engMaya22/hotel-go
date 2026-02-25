@@ -8,6 +8,7 @@ const connectDB = async()=>{
             console.log('Database Connected')
         });
        await mongoose.connect(`${process.env.MONGODB_URI}/hotel-go`)
+       
     }catch(error){
         console.log(error.message)
 
