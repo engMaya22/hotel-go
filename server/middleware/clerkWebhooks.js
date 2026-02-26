@@ -31,3 +31,4 @@ switch (type) {
     default:
         break;
 }
+export default clerkWebhooks; 
