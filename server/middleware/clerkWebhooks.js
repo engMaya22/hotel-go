@@ -1,7 +1,10 @@
 import User from "../models/User.js";
-import { Webhook } from "svix";
-
+import { Webhook } from "svix";//Used to verify webhook signature (security).
+//Custom middleware to handle Clerk webhook events
+//Listens to Clerk events and updates your DB
 const clerkWebhooks = async (req, res) => {
+    //req : Request (data coming from client)
+    // res : Response (what you send back)
     try {
         const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET)
 

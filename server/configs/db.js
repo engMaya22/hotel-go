@@ -17,7 +17,7 @@
 // }
 // export default connectDB;
 
-import mongoose from "mongoose"
+import mongoose from "mongoose" //mongoose is an ODM (Object Data Modeling) library for MongoDB.
 
 let isConnected = false
 
