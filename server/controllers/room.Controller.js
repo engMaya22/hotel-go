@@ -43,12 +43,14 @@ export const createRoom = async(req, res)=>{
 // api to get all rooms  
 export const getRooms = async(req, res)=>{
     try {
-         
+                     //Using .populate("hotel") tells Mongoose:Replace the hotel ID with the actual hotel document.
+
         const rooms  = await Room.find({isAvailable:true}).populate({
-            path:'hotel',
+            //1️⃣ Populate hotel2️⃣ Then inside the hotel document populate owner
+            path:'hotel',//get hotel data
             populate:{
                 path:'owner',
-                select:'image'
+                select:'image'//Only return the image field from the owner.
             }
         }).sort({createdAt : -1})
         res.json({success:true, rooms});
@@ -96,17 +98,3 @@ export const toggleRoomAvailability = async(req, res)=>{
     }
 }
 
-// export const toggleRoomAvailability = async(req, res)=>{
-//     try {
-
-//         const {roomId} = req.body;
-         
-//         await  Room.findAndUpdate(roomId , {isAvailable:!isAvailable})//
-
-//         res.json({success:true, message:"Room has been toggled"});
-
-        
-//     } catch (error) {
-//        res.json({success:false, message:error.message});
-
-//     }
