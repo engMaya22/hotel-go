@@ -3,7 +3,9 @@ import "dotenv/config"
 import cors from "cors";
 import connectDB from "./configs/db.js";
 import { clerkMiddleware } from '@clerk/express'
-import clerkWebhooks from "./middleware/clerkWebhooks.js";
+import clerkWebhooks from "./controllers/clerkWebhooks.js";
+import userRouter from "./routes/userRoutes.js";
+import hotelRouter from "./routes/hotelRoutes.js";
 
 const app = express();
 
@@ -13,6 +15,10 @@ app.use(clerkMiddleware());//Protects routes & attaches Clerk user info to req.
 
 app.use("/api/clerk", clerkWebhooks)
 app.get('/', (req, res) => res.send("Api is working"))
+
+app.use('/api/user' , userRouter);
+app.use('/api/hotel' , hotelRouter);
+
 
 connectDB()
 
