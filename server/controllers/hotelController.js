@@ -9,7 +9,7 @@ const registerHotel = async(req,res)=>{
         
 
         //check if user already register
-        const hotel = await Hotel.findOne(owner);
+        const hotel = await Hotel.findOne(owner);//owner:owner
         if(hotel){
             return res.json({success : false , message:"Hotel already registered"})
 
