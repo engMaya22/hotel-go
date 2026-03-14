@@ -11,6 +11,11 @@ import connectCloudinary from "./configs/cloudinary.js";
 import bookingRouter from "./routes/bookRoutes.js";
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(` Server running on http://localhost:${PORT}`);
+});
 
 app.use(cors());//Allows cross-origin requests
 app.use(express.json());//Parses incoming JSON request bodies.

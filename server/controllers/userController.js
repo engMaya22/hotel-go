@@ -5,7 +5,7 @@
 export const getUserData = async(req , res)=>{
 
     try{
-        const role = req.user.rol;//where auth middleware have added the user data to request after check its authinticated
+        const role = req.user.role;//where auth middleware have added the user data to request after check its authinticated
         const recentSearchedCities = req.user.recentSearchedCities;
         res.json({success:true ,role ,recentSearchedCities});
          

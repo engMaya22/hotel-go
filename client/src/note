@@ -34,3 +34,7 @@ look this array of arrays:       const linkSections = [
     so we need to map ,
 
     dotenv/config" -> Loads environment variables from .env file into process.env.
+
+Frontend → Vite
+Backend → Nodemon
+// we write import createRoom  from "../controllers/room.Controller.js"; just if creaetRoom is default otherwise write {createRoom}
