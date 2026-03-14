@@ -15,7 +15,7 @@ export const AppProvider = ({children})=>{
     const {getToken} = useAuth();
 
     const [isOwner , setIsOwner] = useState(false);
-    const {showHotelReg , setShowHotelReg} = useState(false);
+    const [showHotelReg , setShowHotelReg] = useState(false);
     const [recentSearchedCities , setRecentSearchedCities] = useState([]);
 
 
@@ -38,8 +38,9 @@ export const AppProvider = ({children})=>{
             toast.error(error.message)
         }
     }
+    // useEffect(()=>{},[])
 
-    useEffect = (()=>{
+    useEffect(()=>{
         if(user){
             fetchUser();
         }
@@ -57,4 +58,4 @@ export const AppProvider = ({children})=>{
 
 }
 
-export const useAppContext = ()=>useContext(AppContext)
+export const  useAppContext = ()=>useContext(AppContext)

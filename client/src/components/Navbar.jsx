@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { assets } from "../assets/assets";
-import { useClerk, UserButton, useUser } from "@clerk/clerk-react";
+import { useClerk, UserButton } from "@clerk/clerk-react";
+import {useAppContext} from "../context/AppContext"
 const BookIcon = () => (
   <svg
     className="w-4 h-4 text-gray-700"
@@ -29,18 +30,18 @@ const Navbar = () => {
     { name: "About", path: "/" },
   ];
 
-  const [isScrolled, setIsScrolled] =  useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { openSignIn } = useClerk();
-  const { user } = useUser();
-  const navigate = useNavigate();
+
   const location = useLocation();
+  const { user, navigate, isOwner, setShowHotelReg } = useAppContext();
 
   useEffect(() => {
-    if(location.pathname !== "/"){
+    if (location.pathname !== "/") {
       setIsScrolled(true);
       return;//exits effect early if not homepage
-      
+
     }
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -51,11 +52,10 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 w-full flex items-center justify-between px-4 md:px-16 lg:px-24 xl:px-32 transition-all duration-500 z-50 ${
-        isScrolled
+      className={`fixed top-0 left-0 w-full flex items-center justify-between px-4 md:px-16 lg:px-24 xl:px-32 transition-all duration-500 z-50 ${isScrolled
           ? "bg-white/80 shadow-md text-gray-700 backdrop-blur-lg py-3 md:py-4"
           : "py-4 md:py-6"
-      }`}
+        }`}
     >
       {/* Logo */}
       <Link to={"/"}>
@@ -72,27 +72,24 @@ const Navbar = () => {
           <a
             key={i}
             href={link.path}
-            className={`group flex flex-col gap-0.5 ${
-              isScrolled ? "text-gray-700" : "text-white"
-            }`}
+            className={`group flex flex-col gap-0.5 ${isScrolled ? "text-gray-700" : "text-white"
+              }`}
           >
             {link.name}
             <div
-              className={`${
-                isScrolled ? "bg-gray-700" : "bg-white"
-              } h-0.5 w-0 group-hover:w-full transition-all duration-300`}
+              className={`${isScrolled ? "bg-gray-700" : "bg-white"
+                } h-0.5 w-0 group-hover:w-full transition-all duration-300`}
             />
           </a>
         ))}
 
         {user && (
           <button
-            onClick={() => navigate("/owner")}
-            className={`border px-4 py-1 text-sm font-light rounded-full cursor-pointer ${
-              isScrolled ? "text-black" : "text-white"
-            } transition-all`}
+            onClick={() =>  isOwner ? navigate("/owner") : setShowHotelReg(true)}
+            className={`border px-4 py-1 text-sm font-light rounded-full cursor-pointer ${isScrolled ? "text-black" : "text-white"
+              } transition-all`}
           >
-            Dashboard
+            {isOwner ? 'Dashboard' : 'List your hotel'}
           </button>
         )}
       </div>
@@ -103,9 +100,8 @@ const Navbar = () => {
         <img
           src={assets.searchIcon}
           alt="Search"
-          className={`${
-            isScrolled && "invert"
-          } h-7 transition-all duration-500`}
+          className={`${isScrolled && "invert"
+            } h-7 transition-all duration-500`}
         />
         {user ? (
           <UserButton>
@@ -120,9 +116,8 @@ const Navbar = () => {
         ) : (
           <button
             onClick={openSignIn}
-            className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${
-              isScrolled ? "text-white bg-black" : "bg-white text-black"
-            }`}
+            className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-black" : "bg-white text-black"
+              }`}
           >
             Login
           </button>
@@ -154,9 +149,8 @@ const Navbar = () => {
       {/* Mobile Menu */}
 
       <div
-        className={`fixed top-0 left-0 w-full h-screen bg-white text-base flex flex-col md:hidden items-center justify-center gap-6 font-medium text-gray-800 transition-all duration-500 ${
-          isMenuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed top-0 left-0 w-full h-screen bg-white text-base flex flex-col md:hidden items-center justify-center gap-6 font-medium text-gray-800 transition-all duration-500 ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <button
           className="absolute top-4 right-4"
@@ -171,15 +165,15 @@ const Navbar = () => {
 
         {user && (
           <button
-            onClick={() => navigate("/owner")}
+            onClick={() => isOwner ? navigate("/owner") : setShowHotelReg(true)}
             className="border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all"
           >
-            Dashboard
+            {isOwner ? 'Dashboard' : 'List your hotel'}
           </button>
         )}
 
         {!user && (
-            <button
+          <button
             onClick={openSignIn}
             className="px-8 py-2.5 rounded-full bg-black text-white transition-all duration-500"
           >
