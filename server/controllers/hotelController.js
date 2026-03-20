@@ -1,4 +1,5 @@
 import Hotel from "../models/Hotel.js";
+import User from "../models/User.js";
 
 
 
@@ -9,13 +10,12 @@ const registerHotel = async(req,res)=>{
         
 
         //check if user already register
-        const hotel = await Hotel.findOne(owner);//owner:owner
+        const hotel = await Hotel.findOne({owner});//owner:owner findOne needs an object
         if(hotel){
             return res.json({success : false , message:"Hotel already registered"})
-
         }
         await Hotel.create({name , address , contact ,city ,owner});
-        await User.findByIdAndUpdate(owner ,{role:"hotelOwner"})
+        await User.findByIdAndUpdate(owner ,{role:"hotelOwner"});
         res.json({success : true , message:"Hotel registered successfully"})
 
        

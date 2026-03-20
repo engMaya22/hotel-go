@@ -3,10 +3,20 @@
 import { useState } from 'preact/hooks'
 import { assets, dashboardDummyData } from '../../assets/assets'
 import Title from '../../components/Title'
+import { useEffect } from 'react';
+import { useAppContext } from '../../context/AppContext';
+
 const Dashboard = () => {
 
-  const [dashboardData, setDashboardData] = useState(dashboardDummyData);
+  // const [dashboardData, setDashboardData] = useState(dashboardDummyData);
+  // const { user, isOwner , navigate} = useAppContext();
 
+
+  // useEffect(()=>{
+  //   if(!isOwner)
+  //     navigate('/');
+
+  // },[user]);
   return (<div>
               <Title align="left" font="outfit" title="Dashboard"
                 subtitle="Mointer your room listings , track bookings and analyze revenue-all  in one place , stay updated 
