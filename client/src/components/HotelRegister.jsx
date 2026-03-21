@@ -14,10 +14,10 @@ const HotelRegister = () => {
   const [city, setCity] = useState('');
 
   const submitHandler = async (e) => {
-    e.preventDefault();
+    e.preventDefault();//No reload//control what happens (e.g. API call)
     try {
 
-      const { data } = await axios.post(`/api/hotels`, { name, contact, address, city },
+      const { data } = await axios.post(`/api/hotels`, { name, contact, address, city },//{data} Only response body
         { headers: { Authorization: `Bearer ${await getToken()}` } });
       if (data.success) {
         toast.success(data.message);

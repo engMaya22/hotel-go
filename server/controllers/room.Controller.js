@@ -9,7 +9,7 @@ import { v2 as cloudinary} from "cloudinary"
 
 export const  createRoom = async(req, res)=>{
     try {
-        const {hotelType ,pricePerNight , amenities } = req.body;
+        const {roomType ,pricePerNight , amenities } = req.body;
         const userId = req.auth.userId;
         const hotel = await Hotel.findOne({owner:userId});
 
@@ -28,7 +28,7 @@ export const  createRoom = async(req, res)=>{
         const images =  await Promise.all(uploadImages);
 
         
-        await Room.create({hotelType ,pricePerNight : +pricePerNight, 
+        await Room.create({roomType ,pricePerNight : +pricePerNight, 
             amenities : JSON.parse(amenities)//To convert the string back to a real JavaScript array.
              ,images , hotel:hotel._id});
         res.json({success:true, message:"Room Created"});
