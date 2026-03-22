@@ -1,9 +1,31 @@
-import React, { useState } from 'react'
-import { roomCommonData, roomsDummyData } from '../../assets/assets'
+import React, { useEffect, useState } from 'react'
 import Title from '../../components/Title'
+import { useAppContext } from '../../context/AppContext';
+import toast from 'react-hot-toast';
 
 const ListRoom = () => {
-  const [rooms, setRooms] = useState(roomsDummyData)
+  const [rooms, setRooms] = useState([]);
+  const { axios, getToken, user } = useAppContext();
+
+  //fetch rooms for hotel owner
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const { data } = await axios.get('/api/rooms/owner', {
+          headers: { Authorization: `Bearer ${await getToken()}` }
+        });
+
+        if (data.success) setRooms(data.rooms);
+        else toast.error(data.message);
+
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
+
+    if (user) fetchRooms();
+  }, [user]);
+
   return (
     <div>
       <Title align='left' font='outfit' title='Room Listings'
@@ -33,11 +55,11 @@ const ListRoom = () => {
                   {item.amenities.join(', ')}
                 </td>
                 <td className='py-3 px-4 text-gray-700 border-t border-gray-300 text-center'>
-                  ${item.pricePerNight }
+                  ${item.pricePerNight}
                 </td>
                 <td className='py-3 px-4 text-red-500 border-t border-gray-300 flex text-sm text-center'>
                   <label htmlFor="" className='relative inline-flex items-center gap-3 cursor-pointer text-gray-900'>
-                    <input type="checkbox" className='sr-only peer' checked={item.isAvailable}/>
+                    <input type="checkbox" className='sr-only peer' checked={item.isAvailable} />
                     <div className='w-12 h-7 bg-slate-300 rounded-full peer peer-checked:bg-blue-600 transition-colors duration-200'>
 
                     </div>
