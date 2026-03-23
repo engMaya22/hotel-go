@@ -62,10 +62,11 @@ const AllRooms = () => {
   const handleFilterChange = (checked, value, type) => {
     setSelectedFilters((previousFilters) => {
       const updatedFilters = { ...previousFilters };
-      if (checked)
-        updatedFilters[type].push(value);
+      if (checked)//If checked → ADD
+       // updatedFilters[type].push(value); this make mutate state React prefers immutable updates because it can track changes efficiently.
+        updatedFilters[type] = [...updatedFilters[type], value];
       else
-        updatedFilters[type] = updatedFilters[type].filter(item => item !== value);
+        updatedFilters[type] = updatedFilters[type].filter(item => item !== value);//If unchecked → REMOVE
 
       return updatedFilters;
 
@@ -80,7 +81,8 @@ const AllRooms = () => {
 
   //check if a room matches the selected room types
   const matchRoomType = (room) => {
-    return selectedFilters.roomType.length === 0 || selectedFilters.roomType.includes(room.roomType)
+    return selectedFilters.roomType.length === 0 // if no filter → show all
+    || selectedFilters.roomType.includes(room.roomType)
 
   }
 
@@ -96,7 +98,7 @@ const AllRooms = () => {
   //function to sort rooms based on selected sort options
   const sortRooms = (a, b) => {
     if (selectedSort === 'Price Low to High')
-      return a.pricePerNight - b.pricePerNight;
+      return a.pricePerNight - b.pricePerNight; //Standard JS sort function
 
     if (selectedSort === 'Price Hight to Low')
       return b.pricePerNight - a.pricePerNight;
@@ -116,7 +118,7 @@ const AllRooms = () => {
   }
 
   //filter and sort rooms  based on selected filters and sort options
-  const filteredRooms = useMemo(() => {
+  const filteredRooms = useMemo(() => {//filtering runs on EVERY render // calculate value so use memo ,, if it is get data api then we use useEffect
     return rooms.filter((room) => matchRoomType(room) && matchPriceRange(room) && filterDestination(room)).sort(sortRooms);
 
   }, [rooms, selectedFilters, selectedSort, searchParams]);
