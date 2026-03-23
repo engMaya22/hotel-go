@@ -6,87 +6,52 @@ import Title from '../../components/Title'
 import { assets } from '../../assets/assets'
 import { useAppContext } from '../../context/AppContext'
 import toast from 'react-hot-toast'
+import { buildRoomFormData, validateRoomForm } from '../../utils/room'
 
 const AddRoom = () => {
 
   const { getToken, axios } = useAppContext();
-
-
-  const [images, setImages] = useState({
-    1: null,
-    2: null,
-    3: null,
-    4: null
-  });
-  const [inputs, setInputs] = useState({
+  const initialInputs = {
     roomType: '',
     pricePerNight: 0,
-    amenities: {//object of booleans
-      'Free Wifi': false,
+    amenities: {
+      'Free WiFi': false,
       'Free Breakfast': false,
       'Mountain View': false,
       'Pool Access': false
     }
+  };
 
-  });
+  const initialImages = {
+    1: null,
+    2: null,
+    3: null,
+    4: null
+  };
+
+
+  const [images, setImages] = useState(initialImages);
+  const [inputs, setInputs] = useState(initialInputs);
   const [loading, setLoading] = useState(false);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
     // check if all inputs fields are filled
-    if (!inputs.roomType || !inputs.pricePerNight || !Object.values(inputs.amenities).some(val => val) //true (at least one is true)
-      || !Object.values(images).some(image => image)) {
+    if (!validateRoomForm(inputs, images)) {
       toast.error('Please fill in all the details');
       return;
     }
     setLoading(true);
 
     try {
-      const formData = new FormData();// we need it in file uploads like images where Files cannot be sent as JSON else we can send data like : 
-      //await axios.post('/api/rooms', {
-      //   roomType,
-      //   pricePerNight,
-      //   amenities
-      // });
-      formData.append('roomType', inputs.roomType);
-      formData.append('pricePerNight', inputs.pricePerNight);
-
-      //convert amenities to array and keep enabled ones
-      const amenities = Object.keys(inputs.amenities).filter(
-        (key) => inputs.amenities[key]
-      );
-      formData.append('amenities', JSON.stringify(amenities));//Converts JavaScript object → JSON string ['Free Wifi', 'Pool Access'] => ["Free Wifi","Pool Access"]
-
-      //add images to formData
-
-      Object.keys(images).forEach((key) => {
-        images[key] && formData.append('images', images[key]);
-      }
-
-      );
-
+      const formData = buildRoomFormData(inputs, images);
 
       const { data } = await axios.post('/api/rooms/', formData, { headers: { Authorization: `Bearer ${await getToken()}` } });
       if (data.success) {
         toast.success(data.message);
-        setInputs({
-          'pricePerNight': 0,
-          'roomType': '',
-          'amenities': {
-            'Free Wifi': false,
-            'Free Breakfast': false,
-            'Mountain View': false,
-            'Pool Access': false
-          }
-
-        });
-        setImages({
-          1: null,
-          2: null,
-          3: null,
-          4: null
-        })
+        setInputs({...initialInputs ,   amenities: { ...initialInputs.amenities }});
+        setImages({...initialImages});//setInputs(initialImages)	❌ same reference → may not re-render
 
       } else {
         toast.error(data.message);
@@ -137,7 +102,7 @@ const AddRoom = () => {
             <option value="Single Bed">
               Single Bed
             </option>
-            <option value=" Double Bed">
+            <option value="Double Bed">
               Double Bed
             </option>
 
@@ -162,28 +127,28 @@ const AddRoom = () => {
       <p className='text-gray-800 mt-4'>Amenities</p>
       <div className='flex flex-col flex-wrap mt-1 text-gray-400 max-w-sm'>
         {Object.keys(inputs.amenities)//['Free Wifi', 'Free Breakfast']
-        .map((amenity, index) => (
+          .map((amenity, index) => (
 
-          < div key={index}>
-            <input type="checkbox" id={`amenities${index + 1}`} checked={inputs.amenities[amenity]}//inputs.amenities['Free Wifi'] if this true checked
+            < div key={index}>
+              <input type="checkbox" id={`amenities${index + 1}`} checked={inputs.amenities[amenity]}//inputs.amenities['Free Wifi'] if this true checked
 
-              onChange={() =>
-                setInputs({
-                  ...inputs,
-                  amenities: {
-                    ...inputs.amenities,
-                    [amenity]: !inputs.amenities[amenity],//reverse its state , why we add[amenity] because amenity is dynamic:
-                  },
-                })
-              }
-            />
-            <label htmlFor={`amenities${index + 1}`}> {amenity}</label>
+                onChange={() =>
+                  setInputs({
+                    ...inputs,
+                    amenities: {
+                      ...inputs.amenities,
+                      [amenity]: !inputs.amenities[amenity],//reverse its state , why we add[amenity] because amenity is dynamic:
+                    },
+                  })
+                }
+              />
+              <label htmlFor={`amenities${index + 1}`}> {amenity}</label>
 
-          </div>
+            </div>
 
 
 
-        ))}
+          ))}
 
       </div>
       <button disabled={loading} className='bg-primary text-white px-8 py-2 rounded cursor-pointer  mt-8'>

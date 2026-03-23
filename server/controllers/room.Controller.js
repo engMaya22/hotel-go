@@ -63,7 +63,7 @@ export const getRooms = async(req, res)=>{
 
 
 
-// api to get all rooms for specific hotel
+// api to get all rooms for specific hotel for dashboard list rooms
 export const getOwnerRooms = async(req, res)=>{
     try {
         

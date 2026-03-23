@@ -38,3 +38,6 @@ look this array of arrays:       const linkSections = [
 Frontend → Vite
 Backend → Nodemon
 // we write import createRoom  from "../controllers/room.Controller.js"; just if creaetRoom is default otherwise write {createRoom}
+
+to do :
+pagination in all rooms page , edit functionality in rooms dashboard

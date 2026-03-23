@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { assets, facilityIcons, roomCommonData, roomsDummyData } from "../assets/assets";
+import { assets, facilityIcons, roomCommonData } from "../assets/assets";
 import StarRating from "../components/StarRating";
 import { useUser } from "@clerk/clerk-react";
+import { useAppContext } from "../context/AppContext";
 
 const RoomDetails = () => {
   const { id } = useParams();
   const [room, setRoom] = useState(null);
   const [mainImage, setMainImage] = useState(null);
   const { user } = useUser();
+
+  const {navigate , rooms} = useAppContext();
   useEffect(() => {
     // 
-    const room = roomsDummyData.find(room => room._id === id);
+    const room = rooms.find(room => room._id === id);
 
     room && setRoom(room);
     room && setMainImage(room.images[0]);
