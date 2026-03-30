@@ -6,7 +6,7 @@ import { useAppContext } from "../context/AppContext";
 const FeaturedDestination = () => {
 
   const {navigate , rooms} = useAppContext();
-  console.log(rooms);
+
   return rooms.length > 0 && (
     <div className="px-6 md:px-16 lg:px-24  bg-slate-50 flex flex-col items-center py-20">
 
