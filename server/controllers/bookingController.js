@@ -33,11 +33,13 @@ export const checkAvailabilityAPI = async(req , res)=>{
       //  const roomData = await Room.find(roomId);
         const {room , checkInDate , checkOutDate} = req.body;
         
-        isAvailable =  await checkAvailability({checkInDate , checkOutDate, room})
+        const isAvailable =  await checkAvailability({checkInDate , checkOutDate, room})
         return res.json({success:true ,  isAvailable})
+
 
         
     } catch (error) {
+        console.log('here');
         res.json({success:false , message: error.message})
     }
 
@@ -49,8 +51,9 @@ export const checkAvailabilityAPI = async(req , res)=>{
 export const createBooking = async(req,res)=>{
     try {
         const {room , checkInDate , checkOutDate, guests} = req.body;
+        
         const user = req.user._id;
-        const isAvailable = await checkAvailability(room , checkInDate , checkOutDate);
+        const isAvailable = await checkAvailability({room , checkInDate , checkOutDate});
      
         if(!isAvailable)
              return res.json({success:false , message: 'Room is not available'});
@@ -58,8 +61,9 @@ export const createBooking = async(req,res)=>{
         const roomData = await Room.findById(room).populate('hotel');
         //calc total price base on price per night of room 
         let totalPrice = roomData.pricePerNight;
-        const checkIn = new Date(roomData.checkInDate);
-        const checkOut = new Date(roomData.checkOutDate);
+        
+        const checkIn = new Date(checkInDate);
+        const checkOut = new Date(checkOutDate);
         const timeDiff = checkOut.getTime() - checkIn.getTime();
         const nights  = Math.ceil(timeDiff / (1000*3600*24));
         totalPrice  *= nights;
@@ -83,7 +87,7 @@ export const createBooking = async(req,res)=>{
         
     } catch (error) {
           console.log(error);
-          res.json({success:false , message: error.message})
+          res.json({success:false , message: 'error.message'})
     }
 }
 

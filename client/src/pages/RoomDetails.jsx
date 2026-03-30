@@ -4,21 +4,94 @@ import { assets, facilityIcons, roomCommonData } from "../assets/assets";
 import StarRating from "../components/StarRating";
 import { useUser } from "@clerk/clerk-react";
 import { useAppContext } from "../context/AppContext";
+import toast from "react-hot-toast";
 
 const RoomDetails = () => {
   const { id } = useParams();
   const [room, setRoom] = useState(null);
   const [mainImage, setMainImage] = useState(null);
+  const [checkInDate, setCheckInDate] = useState(null);
+  const [checkOutDate, setCheckOutDate] = useState(null);
+  const [guests, setGuests] = useState(1);
+  const [isAvailable, setIsAvailable] = useState(false);
+  
+
   const { user } = useUser();
 
-  const {navigate , rooms} = useAppContext();
+  const { navigate, rooms, axios, getToken } = useAppContext();
+
+
+  //check availability of room 
+  const checkAvailability = async () => {
+    try {
+
+      if ((new Date(checkInDate) >= new Date(checkOutDate))) {
+        toast.error('Check-In date must be less than Check-Out date');
+        return;
+      }
+   
+      const { data } = await axios.post("api/bookings/check-availability", { room :id, checkInDate, checkOutDate });
+      if (data.success) {
+        if (data.isAvailable) {
+          setIsAvailable(true);
+          toast.success('Room is available');
+
+        } else {
+          setIsAvailable(false);
+          toast.error('Room is n\'t available');
+
+        }
+
+      } else {
+        toast.error(data.message);
+
+      }
+
+    } catch (error) {
+      
+      toast.error(error.message);//the issue here 
+
+    }
+
+
+  }
+
+  //on Submit function to check availability && book the room
+  const onSubmitHandler = async(e) =>{
+   e.preventDefault();
+
+   try {
+      if(!isAvailable){
+        await checkAvailability();
+        return;
+      }else{
+        
+        const {data} = await axios.post("api/bookings/book",{room : id , checkInDate , checkOutDate , guests , paymentMethod:"Pay at hotel"},
+                                                            { headers: { Authorization: `Bearer ${await getToken()}` } });
+                                                          //  console.log(data);
+          if(data.success){
+            toast.success(data.message);
+            navigate("/my-bookings");
+            scrollTo(0,0);
+
+          }else{
+            toast.error(data.message);
+          }
+      }
+   } catch (error) {
+    toast.error(error.message);
+    
+   } 
+
+  }
+
   useEffect(() => {
     // 
     const room = rooms.find(room => room._id === id);
 
     room && setRoom(room);
     room && setMainImage(room.images[0]);
-  }, [id]);
+  }, [rooms]);
 
   return room && (<div className="py-28 md:py-35 px-4 md:px-16 lg:px-24 xl:px-32">
 
@@ -80,13 +153,14 @@ const RoomDetails = () => {
     </div>
 
     {/* checkin checkout form */}
-    <form className="flex flex-col md:flex-row items-start md:items-center justify-between bg-white p-6 rounded-xl mx-auto
+    <form onSubmit={onSubmitHandler} className="flex flex-col md:flex-row items-start md:items-center justify-between bg-white p-6 rounded-xl mx-auto
                        mt-16 max-w-6xl shadow-[0px_0px_20px_rgba(0,0,0,0.15)]">
       <div className="flex flex-col md:flex-row flex-wrap items-start md:items-center gap-4 md:gap-10 text-gray-500">
 
         <div className="flex flex-col">
           <label htmlFor="checkInDate" className="font-medium">Check-In</label>
           <input type="date" id="checkInDate" placeholder="Check-In"
+            onChange={(e) => setCheckInDate(e.target.value)} min={new Date().toISOString().split('T')[0]}//today date only
             className="w-full rounded border border-gray-300 px-3 py-2 mt-1.5 outline-none"
             required />
         </div>
@@ -96,6 +170,7 @@ const RoomDetails = () => {
         <div className="flex flex-col">
           <label htmlFor="checkOutDate" className="font-medium">Check-Out</label>
           <input type="date" id="checkOutDate" placeholder="Check-Out"
+            onChange={(e) => setCheckOutDate(e.target.value)} min={checkInDate} disabled={!checkInDate}//disabled till checkin is selected
             className="w-full rounded border border-gray-300 px-3 py-2 mt-1.5 outline-none"
             required />
         </div>
@@ -104,7 +179,7 @@ const RoomDetails = () => {
 
         <div className="flex flex-col">
           <label htmlFor="Guests" className="font-medium">Guests</label>
-          <input type="number" id="Guests" placeholder="0"
+          <input type="number" id="Guests" placeholder="1" min="1" onChange={(e) => setGuests(e.target.value)} value={guests}
             className="max-w-20 rounded border border-gray-300 px-3 py-2 mt-1.5 outline-none"
             required />
         </div>
@@ -112,7 +187,7 @@ const RoomDetails = () => {
       </div>
       <button type="submit" className="bg-primary hover:bg-primary-dull active:scale-95 transition-all
                                                   text-white rounded-md max-md:w-full max-md:mt-6 md:px-25 py:3 md:py-4 text-base cursor-pointer">
-        Check Availability
+        {isAvailable ? "Book Now" : "Check Availability"}
       </button>
 
     </form>
@@ -142,17 +217,17 @@ const RoomDetails = () => {
     <div className="flex flex-col items-start gap-4">
 
       <div className="flex gap-4">
-     
-         <img src={room.hotel.owner.image}  alt="Host" className="h-14 w-14  md:h-18 md:w-18 rounded-full" />
-         <div>
-           <p className="text-lg md:text-xl">
+
+        <img src={room.hotel.owner.image} alt="Host" className="h-14 w-14  md:h-18 md:w-18 rounded-full" />
+        <div>
+          <p className="text-lg md:text-xl">
             Hosted By {room.hotel.name}
-           </p>
-           <div className="flex items-center mt-1">
+          </p>
+          <div className="flex items-center mt-1">
             <StarRating />
             <p className="ml-2">200+ reviews</p>
-           </div>
-         </div>
+          </div>
+        </div>
       </div>
 
       <button className="px-6 py-2.5 mt-4 rounded text-white bg-primary hover:bg-primary-dull transition-all cursor-pointer">
