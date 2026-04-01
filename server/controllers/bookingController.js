@@ -118,8 +118,7 @@ export const createBooking = async(req,res)=>{
             }
 
 
-             console.log(process.env.SENDER_EMAIL);
-             console.log(req.user.email);
+    
             return res.json({success:true , message: 'Booking created'});
 
 
