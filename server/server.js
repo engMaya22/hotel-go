@@ -1,4 +1,4 @@
-import express from "express"
+import express, { application, json } from "express"
 import "dotenv/config"
 import cors from "cors";
 import connectDB from "./configs/db.js";
@@ -9,6 +9,8 @@ import hotelRouter from "./routes/hotelRoutes.js";
 import roomRouter from "./routes/roomRoutes.js";
 import connectCloudinary from "./configs/cloudinary.js";
 import bookingRouter from "./routes/bookRoutes.js";
+import { stripePayment } from "./controllers/bookingController.js";
+import { stripeWebHooks } from "./controllers/stripeWebhooks.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,6 +20,13 @@ app.listen(PORT, () => {
 });
 
 app.use(cors());//Allows cross-origin requests
+
+//API TO listen to stripe webhooks
+app.post('api/stripe',express.raw({type:application/json}) , stripeWebHooks)
+
+
+
+
 app.use(express.json());//Parses incoming JSON request bodies.
 app.use(clerkMiddleware());//Protects routes & attaches Clerk user info to req.
 

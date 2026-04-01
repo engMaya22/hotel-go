@@ -7,35 +7,55 @@ import { useAppContext } from '../context/AppContext';
 import toast from 'react-hot-toast';
 
 const MyBookings = () => {
-    
-    const { user ,  setRecentSearchedCities, axios, getToken } = useAppContext();
+
+    const { user, setRecentSearchedCities, axios, getToken } = useAppContext();
     const [bookings, setBookings] = useState([]);
 
-    const fetchMyBookings = async()=>{
+    const fetchMyBookings = async () => {
         try {
-            const {data} = await axios.get('/api/bookings/user'  , 
-                                             { headers: { Authorization: `Bearer ${await getToken()}` } });
-            if(data.success){
+            const { data } = await axios.get('/api/bookings/user',
+                { headers: { Authorization: `Bearer ${await getToken()}` } });
+            if (data.success) {
                 // console.log(getToken());
                 setBookings(data.bookings);
-            }else{
-                 toast.error(data.message);
+            } else {
+                toast.error(data.message);
             }
-            
+
         } catch (error) {
             toast.error(error.message);
-            
+
+        }
+
+    }
+
+    const HandlePayment = async (bookingId) => {
+
+        try {
+            const { data } = await axios.post('/api/bookings/stripe-payment', { bookingId },
+                { headers: { Authorization: `Bearer ${await getToken()}` } });
+
+
+            if (data.success) {
+                window.location.href = data.url;
+            } else {
+                toast.error(data.message);
+            }
+
+        } catch (error) {
+            toast.error(error.message);
+
         }
 
     }
 
     useEffect(() => {
-        if(user){
+        if (user) {
             fetchMyBookings();
         }
 
-  
-    },[user]);
+
+    }, [user]);
 
 
     return (
@@ -117,7 +137,7 @@ const MyBookings = () => {
                                     </p>
                                 </div>
                                 {!booking.isPaid && (
-                                    <button className='px-4 py-1.5 mt-4 text-xs border border-gray-400 rounded-full transition-all cursor-pointer hover:bg-gray-500'>
+                                    <button onClick={()=>HandlePayment(booking._id)} className='px-4 py-1.5 mt-4 text-xs border border-gray-400 rounded-full transition-all cursor-pointer hover:bg-gray-500'>
                                         Pay Now
                                     </button>
                                 )
