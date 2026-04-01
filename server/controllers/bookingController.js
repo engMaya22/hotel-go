@@ -51,6 +51,7 @@ export const checkAvailabilityAPI = async(req , res)=>{
 
 export const createBooking = async(req,res)=>{
     try {
+        console.log('try');
         const {room , checkInDate , checkOutDate, guests} = req.body;
         
         const user = req.user._id;
@@ -97,8 +98,8 @@ export const createBooking = async(req,res)=>{
 
                     <ul>
                         <li> <strong> Booking ID : </strong> ${booking._id} </li>
-                        <li> <strong> Hotel Name : </strong> ${booking.hotel.name} </li>
-                        <li> <strong> Location : </strong> ${booking.hotel.address} </li>
+                        <li> <strong> Hotel Name : </strong> ${roomData.hotel.name} </li>
+                        <li> <strong> Location : </strong> ${roomData.hotel.address} </li>
                         <li> <strong> Date : </strong> ${booking.checkInDate.toDateString()}  </li>
                         <li> <strong> Booking Amount : </strong> ${process.env.CURRENCY || '$' } ${booking.totalPrice} /night </li>
                     </ul>
