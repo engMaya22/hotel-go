@@ -193,7 +193,7 @@ export const stripePayment = async(req , res)=>{
                 product_data :{
                     name:roomData.hotel.name,
                 },
-                unite_data : totalPrice*100
+                unit_amount : totalPrice*100
                 
             },
             quantity:1
@@ -215,7 +215,7 @@ export const stripePayment = async(req , res)=>{
         res.json({success:true , url:session.url})
         
     } catch (error) {
-        res.json({success:false , message:"Payment failed"})
+        res.json({success:false , message:"Paid failed"})
 
         
     }

@@ -22,8 +22,7 @@ app.listen(PORT, () => {
 app.use(cors());//Allows cross-origin requests
 
 //API TO listen to stripe webhooks
-app.post('api/stripe',express.raw({type:application/json}) , stripeWebHooks)
-
+app.post('/api/stripe', express.raw({ type: 'application/json' }), stripeWebHooks)
 
 
 
