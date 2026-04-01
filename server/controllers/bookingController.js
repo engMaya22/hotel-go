@@ -3,6 +3,7 @@
 
 //function to check  availability of  room 
 
+import transporter from "../configs/nodemailer.js";
 import Book from "../models/Booking.js";
 import Hotel from "../models/Hotel.js";
 import Room from "../models/Room.js";
@@ -69,7 +70,8 @@ export const createBooking = async(req,res)=>{
         totalPrice  *= nights;
 
 
-
+        console.log("SMTP_USER:", process.env.SMTP_USER);//not consoled
+        console.log("SMTP_PASS:", process.env.SMTP_PASS);//not consoled
         //const hotel = await Hotel.find({room});
 
         const booking = await Book.create({
@@ -79,7 +81,45 @@ export const createBooking = async(req,res)=>{
             checkInDate ,
             checkOutDate,
             guests: +guests,
-            user})
+            user});
+
+           
+            //send mail  to  user done booking
+            const mailOptions = {
+                from:  process.env.SENDER_EMAIL, // sender address
+                to: req.user.email, // list of recipients
+                subject: "Hello", // subject line
+                text: "Hotel Booking Details", // plain text body
+                html: `
+                    <h2> Your Booking Details </h2>
+                    <p> Dear ${req.user.username} ,  </p>
+                    <p> Thank you for your booking! here are your details: </p>
+
+                    <ul>
+                        <li> <strong> Booking ID : </strong> ${booking._id} </li>
+                        <li> <strong> Hotel Name : </strong> ${booking.hotel.name} </li>
+                        <li> <strong> Location : </strong> ${booking.hotel.address} </li>
+                        <li> <strong> Date : </strong> ${booking.checkInDate.toDateString()}  </li>
+                        <li> <strong> Booking Amount : </strong> ${process.env.CURRENCY || '$' } ${booking.totalPrice} /night </li>
+                    </ul>
+
+                    <p> We look forward to welcoming you! </p>
+                    <p> If you need to make any changes feel free to contact us!
+                `, // HTML body
+            };
+
+           
+            try {
+                console.log("📧 Sending email...");
+                const info = await transporter.sendMail(mailOptions);
+                console.log("✅ Email sent:", info.response);
+            } catch (err) {
+                console.error("❌ Email error:", err);
+            }
+
+
+             console.log(process.env.SENDER_EMAIL);
+             console.log(req.user.email);
             return res.json({success:true , message: 'Booking created'});
 
 
@@ -87,7 +127,7 @@ export const createBooking = async(req,res)=>{
         
     } catch (error) {
           console.log(error);
-          res.json({success:false , message: 'error.message'})
+          res.json({success:false , message: error.message})
     }
 }
 

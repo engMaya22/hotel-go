@@ -61,6 +61,6 @@ gthub description from this:
 06:15:08 Create API for Hotels
 06:55:12 Create Booking API
 07:27:07 Connect Frontend with Backend
-09:42:28 sending booking confirmation email
+09:42:28 sending booking confirmation email Nodemailer and brevo
 09:59:27 Deploy project on Vercel
 10:08:26 Add Stripe payment gateway
