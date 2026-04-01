@@ -2,15 +2,40 @@
 
 import React, { useEffect, useState } from 'react'
 import Title from '../components/Title'
-import { assets, userBookingsDummyData } from '../assets/assets'
+import { assets } from '../assets/assets'
+import { useAppContext } from '../context/AppContext';
+import toast from 'react-hot-toast';
 
 const MyBookings = () => {
+    
+    const { user ,  setRecentSearchedCities, axios, getToken } = useAppContext();
+    const [bookings, setBookings] = useState([]);
 
-    const [bookings, setBookings] = useState(userBookingsDummyData);
+    const fetchMyBookings = async()=>{
+        try {
+            const {data} = await axios.get('/api/bookings/user'  , 
+                                             { headers: { Authorization: `Bearer ${await getToken()}` } });
+            if(data.success){
+                // console.log(getToken());
+                setBookings(data.bookings);
+            }else{
+                 toast.error(data.message);
+            }
+            
+        } catch (error) {
+            toast.error(error.message);
+            
+        }
+
+    }
+
     useEffect(() => {
+        if(user){
+            fetchMyBookings();
+        }
 
-        // here we need to set booking based on current user
-    });
+  
+    },[user]);
 
 
     return (
