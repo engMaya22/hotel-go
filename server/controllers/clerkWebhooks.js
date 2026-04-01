@@ -17,8 +17,8 @@ const clerkWebhooks = async (req, res) => {
         await whook.verify(JSON.stringify(req.body), headers)
 
         const { data, type } = req.body
-        console.log("data is", data);
-        console.log("type is", type);
+        // console.log("data is", data);
+        // console.log("type is", type);
 
         switch (type) {
             case 'user.created': {
