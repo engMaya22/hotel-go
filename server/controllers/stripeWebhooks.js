@@ -10,7 +10,7 @@ export const stripeWebHooks = async (request, response) => {
   const sig = request.headers['stripe-signature'];
 
   let event;
-  console.log('hit this');//this not hit never
+  //console.log('hit this');//this not hit never
 
   try {
     event = stripeInstance.webhooks.constructEvent(

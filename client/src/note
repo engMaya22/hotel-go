@@ -43,24 +43,10 @@ to do :
 pagination in all rooms page , edit functionality in rooms dashboard
 add search icon functionalty in rooms page ,
 add star rate functionality
+seed data 
+ increase options of countries
 
-gthub description from this:
-00:00 Project Overview
-06:24 Project Creation
-22:08 Create Navigation bar
-42:51 Create Home Page
-57:29 User Authentication using Clerk
-02:15:07 Hotel List Page
-02:50:36 Hotel Details Page
-03:25:41 My Bookings Page
-03:47:48 Create admin dashboard
-05:00:16 Create Backend of project
-05:13:10 Connect mongoDB database
-05:31:27 setup Clerk authentication in Backend
-06:00:41 Create API for users
-06:15:08 Create API for Hotels
-06:55:12 Create Booking API
-07:27:07 Connect Frontend with Backend
-09:42:28 sending booking confirmation email Nodemailer and brevo
-09:59:27 Deploy project on Vercel
-10:08:26 Add Stripe payment gateway
+fix in small desgin 
+add required pages like Contact
+not found items pages
+
