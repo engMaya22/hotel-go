@@ -43,15 +43,21 @@ const AddRoom = () => {
       return;
     }
     setLoading(true);
+    const countImages = Object.values(images).filter(img => img !== null).length;
+    const selectedImages = Object.values(images).filter(img => img !== null).length;
 
+    if (selectedImages !== 4) {
+      toast.error('Please upload exactly 4 images');
+      return;
+    }
     try {
       const formData = buildRoomFormData(inputs, images);
 
       const { data } = await axios.post('/api/rooms/', formData, { headers: { Authorization: `Bearer ${await getToken()}` } });
       if (data.success) {
         toast.success(data.message);
-        setInputs({...initialInputs ,   amenities: { ...initialInputs.amenities }});
-        setImages({...initialImages});//setInputs(initialImages)	❌ same reference → may not re-render
+        setInputs({ ...initialInputs, amenities: { ...initialInputs.amenities } });
+        setImages({ ...initialImages });//setInputs(initialImages)	❌ same reference → may not re-render
 
       } else {
         toast.error(data.message);
@@ -83,6 +89,10 @@ const AddRoom = () => {
 
         ))}
       </div>
+
+      <p className='text-sm text-red-500'>
+        {Object.values(images).filter(img => img !== null).length}/4 images uploaded
+      </p>
 
 
       <div className='w-full flex max-sm:flex-col sm:gap-4 mt-4'>
