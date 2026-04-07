@@ -40,11 +40,11 @@ Backend → Nodemon
 // we write import createRoom  from "../controllers/room.Controller.js"; just if creaetRoom is default otherwise write {createRoom}
 
 to do :
-pagination in all rooms page , edit functionality in rooms dashboard
+pagination in all rooms page 
 add search icon functionalty in rooms page ,
 add star rate functionality
-seed data 
- increase options of countries
+
+increase options of countries
 
 fix in small desgin 
 add required pages like Contact
