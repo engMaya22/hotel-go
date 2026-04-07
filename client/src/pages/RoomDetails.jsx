@@ -6,6 +6,7 @@ import { useUser } from "@clerk/clerk-react";
 import { useAppContext } from "../context/AppContext";
 import toast from "react-hot-toast";
 import ConfirmModal from "../components/ConfirmModal";
+import { useRoomBooking } from "../hooks/useRoomBooking";
 
 const RoomDetails = () => {
   const { id } = useParams();
@@ -14,77 +15,31 @@ const RoomDetails = () => {
   const [checkInDate, setCheckInDate] = useState(null);
   const [checkOutDate, setCheckOutDate] = useState(null);
   const [guests, setGuests] = useState(1);
-  const [isAvailable, setIsAvailable] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const { user } = useUser();
   const { navigate, rooms, axios, getToken } = useAppContext();
+  const { isAvailable, checkAvailability, bookRoom } = useRoomBooking({
+    axios,
+    getToken,
+    roomId: id,
+    navigate,
+    toast,
+
+
+  });
 
   // Check availability
-  const checkAvailability = async () => {
-    try {
-      if (!checkInDate || !checkOutDate) {
-        toast.error("Please select check-in and check-out dates");
-        return;
-      }
-      if (new Date(checkInDate) >= new Date(checkOutDate)) {
-        toast.error("Check-In date must be before Check-Out date");
-        return;
-      }
 
-      const { data } = await axios.post("api/bookings/check-availability", {
-        room: id,
-        checkInDate,
-        checkOutDate,
-      });
 
-      if (data.success) {
-        setIsAvailable(data.isAvailable);
-        toast[data.isAvailable ? "success" : "error"](
-          data.isAvailable ? "Room is available" : "Room is not available"
-        );
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
 
-  // Book room API
-  const bookRoom = async () => {
-    try {
-      const { data } = await axios.post(
-        "api/bookings/book",
-        {
-          room: id,
-          checkInDate,
-          checkOutDate,
-          guests,
-          paymentMethod: "Pay at hotel",
-        },
-        {
-          headers: { Authorization: `Bearer ${await getToken()}` },
-        }
-      );
-
-      if (data.success) {
-        toast.success(data.message);
-        navigate("/my-bookings");
-        scrollTo(0, 0);
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
 
   // Form submit: either check availability or open modal
   const onFormSubmit = async (e) => {
     e.preventDefault();
     if (!isAvailable) {
-      await checkAvailability();
+      await checkAvailability(checkInDate,
+        checkOutDate);
     } else {
       setIsConfirmOpen(true);
     }
@@ -139,9 +94,8 @@ const RoomDetails = () => {
                 onClick={() => setMainImage(image)}
                 src={image}
                 alt="room"
-                className={`cursor-pointer w-full rounded-xl object-cover shadow-md ${
-                  mainImage === image && "outline-3 outline-orange-500"
-                }`}
+                className={`cursor-pointer w-full rounded-xl object-cover shadow-md ${mainImage === image && "outline-3 outline-orange-500"
+                  }`}
               />
             ))}
           </div>
@@ -267,7 +221,11 @@ const RoomDetails = () => {
         message={`Are you sure you want to book this room "${room?.roomType}"?`}
         onCancel={() => setIsConfirmOpen(false)}
         onConfirm={async () => {
-          await bookRoom();
+          await bookRoom({
+            checkInDate,
+            checkOutDate,
+            guests: Number(guests),
+          });
           setIsConfirmOpen(false);
         }}
         buttonTitle="Book"
