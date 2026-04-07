@@ -7,10 +7,10 @@ const HotelCard = ({ room, index }) => {
       to={"/rooms/" + room._id}
       onClick={() => scrollTo(0, 0)}
       key={room._id}
-      className="relative max-w-70 rounded-xl w-full overflow-hidden bg-white text-gray-500/900
+      className="relative max-w-70 rounded-xl w-full h-100 overflow-hidden bg-white text-gray-500/900
       shadow-[0px_4px_4px_rgba(0,0,0,0.05)]"
     >
-      <img src={room.images[0]} alt=""   className="w-full object-cover"
+      <img src={room.images[0]} alt=""   className="w-full h-50 object-cover"
  />
       {index % 2 === 0 && (
         <p className="px-3 py-1 absolute top-3 left-3 bg-white text-xs rounded-full text-gray-800 font-medium">
