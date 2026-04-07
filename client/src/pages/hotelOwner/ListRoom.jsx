@@ -3,7 +3,7 @@ import Title from '../../components/Title'
 import { useAppContext } from '../../context/AppContext';
 import toast from 'react-hot-toast';
 import EditRoomModal from '../../components/EditRoomModal';
-import { Pencil } from "lucide-react";
+import { Delete, DeleteIcon, Pencil, RemoveFormatting } from "lucide-react";
 const ListRoom = () => {
   const [rooms, setRooms] = useState([]);
   const { axios, getToken, user, currency } = useAppContext();
@@ -32,6 +32,27 @@ const ListRoom = () => {
     setIsEditOpen(true);
   };
 
+
+  const deleteHandler = async (room) => {
+    try {
+      const { data } = await axios.delete('/api/rooms/delete-room', {
+        headers: { Authorization: `Bearer ${await getToken()}` },// axios.delete works differently from axios.post/axios.put:
+
+        //The second parameter is always config (like headers), not the body.
+        data: { roomId: room._id } // <-- pass body here
+      });
+
+      if (data.success) {
+        fetchRooms();
+        toast.success(data.message);
+      }
+      else toast.error(data.message);
+
+    } catch (error) {
+      toast.error(error.message);
+    }
+
+  }
 
 
 
@@ -92,7 +113,7 @@ const ListRoom = () => {
                     {currency}{item.pricePerNight}
                   </td>
 
-                  <td className='py-3 px-4 text-red-500 border-t border-gray-300 flex text-sm text-center'>
+                  <td className='py-3 px-4 border-t border-gray-300 text-center flex flex-col sm:flex-row items-center justify-center gap-2'>
 
                     {/* Toggle */}
                     <div className="relative group">
@@ -132,6 +153,19 @@ const ListRoom = () => {
 
                       <span className="absolute bottom-full mb-1 hidden group-hover:block text-xs bg-black text-white px-2 py-1 rounded">
                         Edit
+                      </span>
+                    </button>
+
+
+                    {/* delete Button */}
+                    <button
+                      onClick={() => deleteHandler(item)}
+                      className="p-2 bg-blue-500 text-white mx-2 rounded-md hover:bg-blue-600 transition group relative"
+                    >
+                      <DeleteIcon size={16} />
+
+                      <span className="absolute bottom-full mb-1 hidden group-hover:block text-xs bg-black text-white px-2 py-1 rounded">
+                        Delete
                       </span>
                     </button>
                   </td>

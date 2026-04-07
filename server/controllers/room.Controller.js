@@ -104,6 +104,27 @@ export const updateRoom = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+//delete room
+export const deleteRoom = async (req, res) => {
+  try {
+    const { roomId } = req.body;
+
+    const room = await Room.findById(roomId);
+    if (!room)
+      return res
+        .status(404)
+        .json({ success: false, message: "Room not found" });
+
+  
+
+    await room.deleteOne();
+
+    res.json({ success: true, message: "Room deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 
 // api to toggle availability for room
 export const toggleRoomAvailability = async (req, res) => {
