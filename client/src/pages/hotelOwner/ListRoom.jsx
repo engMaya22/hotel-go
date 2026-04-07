@@ -4,13 +4,14 @@ import { useAppContext } from '../../context/AppContext';
 import toast from 'react-hot-toast';
 import EditRoomModal from '../../components/EditRoomModal';
 import { Delete, DeleteIcon, Pencil, RemoveFormatting } from "lucide-react";
+import ConfirmModal from '../../components/ConfirmModal';
 const ListRoom = () => {
   const [rooms, setRooms] = useState([]);
   const { axios, getToken, user, currency } = useAppContext();
 
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
-
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
 
   const fetchRooms = async () => {
@@ -158,12 +159,15 @@ const ListRoom = () => {
 
 
                     {/* delete Button */}
+                    {/* delete Button */}
                     <button
-                      onClick={() => deleteHandler(item)}
-                      className="p-2 bg-blue-500 text-white mx-2 rounded-md hover:bg-blue-600 transition group relative"
+                      onClick={() => {
+                        setSelectedRoom(item); // track which room
+                        setIsDeleteOpen(true); // open modal
+                      }}
+                      className="p-2 bg-red-500 text-white mx-2 rounded-md hover:bg-red-600 transition group relative"
                     >
                       <DeleteIcon size={16} />
-
                       <span className="absolute bottom-full mb-1 hidden group-hover:block text-xs bg-black text-white px-2 py-1 rounded">
                         Delete
                       </span>
@@ -185,6 +189,23 @@ const ListRoom = () => {
         onClose={() => setIsEditOpen(false)}
         room={selectedRoom}
         onSave={fetchRooms}
+      />
+
+      <ConfirmModal
+        isOpen={isDeleteOpen}
+        title="Confirm Delete"
+        message={`Are you sure you want to delete the room "${selectedRoom?.roomType}"? This action cannot be undone.`}
+        onCancel={() => {
+          setIsDeleteOpen(false);
+          setSelectedRoom(null);
+        }}
+        onConfirm={async () => {
+          await deleteHandler(selectedRoom);
+          setIsDeleteOpen(false);
+          setSelectedRoom(null);
+         
+        }}
+         buttonTitle='Delete'
       />
 
 

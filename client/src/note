@@ -40,6 +40,8 @@ Backend → Nodemon
 // we write import createRoom  from "../controllers/room.Controller.js"; just if creaetRoom is default otherwise write {createRoom}
 
 to do :
+featured functionality
+cover image , is cover?
 pagination in all rooms page 
 add search icon functionalty in rooms page ,
 add star rate functionality
