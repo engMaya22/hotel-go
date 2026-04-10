@@ -10,7 +10,7 @@ const roomSchema = new mongoose.Schema({
     amenities : {type:Array , required:true},//array of any thing
     images : [{type:String}],//array of strings
     isAvailable : {type:Boolean , default:true},
-    isFeatured : {type:Boolean , default:false}
+     isFeatured : {type:Boolean , default:false}
 
 
 
