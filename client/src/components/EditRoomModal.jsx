@@ -11,7 +11,9 @@ const EditRoomModal = ({ isOpen, onClose, room, onSave }) => {
     const [formData, setFormData] = useState({
         roomType: '',
         pricePerNight: '',
+        isFeatured: false,
         amenities: {} // store as object like { "Free WiFi": true, "Pool Access": false }
+
     });
     const [images, setImages] = useState({ 1: null, 2: null, 3: null, 4: null });
 
@@ -26,6 +28,7 @@ const EditRoomModal = ({ isOpen, onClose, room, onSave }) => {
             setFormData({
                 roomType: room.roomType || '',
                 pricePerNight: room.pricePerNight || '',
+                isFeatured: room.isFeatured,
                 amenities: amenitiesObj
             });
             const imgs = {};
@@ -49,7 +52,12 @@ const EditRoomModal = ({ isOpen, onClose, room, onSave }) => {
             }
         });
     };
-
+    const toggleFeatured = () => {
+        setFormData(prev => ({
+            ...prev,
+            isFeatured: !prev.isFeatured
+        }));
+    };
     const handleUpdate = async () => {
 
         try {
@@ -57,11 +65,11 @@ const EditRoomModal = ({ isOpen, onClose, room, onSave }) => {
             form.append('roomId', room._id);
             form.append('roomType', formData.roomType);
             form.append('pricePerNight', formData.pricePerNight);
-            // console.log('is',formData);
+            form.append('isFeatured', JSON.stringify(formData.isFeatured));//from data not keep type ! so it will be string instead of boolean
             form.append('amenities', JSON.stringify(
                 Object.keys(formData.amenities).filter(k => formData.amenities[k])
             ));
-         
+
 
             // Append new images only
             Object.values(images).forEach(img => {
@@ -82,14 +90,14 @@ const EditRoomModal = ({ isOpen, onClose, room, onSave }) => {
 
 
             if (data.success) {
-               
+
                 toast.success(data.message);
                 onClose();
                 onSave();
             } else toast.error(data.message);
 
         } catch (error) {
-             console.log(error);
+            console.log(error);
             toast.error(error.message);
         }
     };
@@ -158,6 +166,20 @@ const EditRoomModal = ({ isOpen, onClose, room, onSave }) => {
                             />
                         </label>
                     ))}
+                </div>
+
+                <div className="flex items-center gap-2 mt-3">
+                    <input
+                        type="checkbox"
+                        id={`featured-${room?._id}`}
+                        className="w-4 h-4"
+                        checked={formData.isFeatured}
+                        onChange={toggleFeatured}
+                    />
+
+                    <label htmlFor={`featured-${room?._id}`} className="text-gray-700">
+                        Featured Room
+                    </label>
                 </div>
 
                 {/* Actions */}

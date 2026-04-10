@@ -2,17 +2,24 @@
 import HotelCard from "./HotelCard";
 import Title from "./Title";
 import { useAppContext } from "../context/AppContext";
+import { useEffect, useState } from "react";
 
 const FeaturedDestination = () => {
 
   const {navigate , rooms} = useAppContext();
+  const [featuredRooms , setFeaturedRooms] = useState([]);
+  useEffect(()=>{
+    const featuredRooms = rooms.filter((room)=>room.isFeatured);
+    setFeaturedRooms(featuredRooms);
 
-  return rooms.length > 0 && (
+  },[rooms])
+
+  return featuredRooms.length > 0 && (
     <div className="px-6 md:px-16 lg:px-24  bg-slate-50 flex flex-col items-center py-20">
 
       <Title title="Featured Destination" subtitle="Discover our selection of properties around the world, offering luxury and unforgettable experience." />
       <div className="flex items-center justify-center gap-6 mt-20 max-md:flex-wrap">
-        {rooms.slice(0, 4).map((room, index) => (
+        {featuredRooms.slice(0, 4).map((room, index) => (
           <HotelCard key={room._id} room={room} index={index} />
         ))}
       </div>

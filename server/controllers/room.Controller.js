@@ -7,7 +7,7 @@ import { v2 as cloudinary } from "cloudinary";
 
 export const createRoom = async (req, res) => {
   try {
-    const { roomType, pricePerNight, amenities } = req.body;
+    const { roomType, pricePerNight, amenities , isFeatured } = req.body;
     const userId = req.auth.userId;
     const hotel = await Hotel.findOne({ owner: userId });
 
@@ -28,6 +28,7 @@ export const createRoom = async (req, res) => {
       pricePerNight: +pricePerNight,
       amenities: JSON.parse(amenities), //To convert the string back to a real JavaScript array.
       images,
+      isFeatured,
       hotel: hotel._id,
     });
     res.json({ success: true, message: "Room Created" });
@@ -71,10 +72,32 @@ export const getOwnerRooms = async (req, res) => {
   }
 };
 
+// get featured rooms
+
+
+export const getFeaturedRooms = async (req, res) => {
+  try {
+
+    const rooms = await Room.find({ isFeatured: true })
+      .populate({
+        //1️⃣ Populate hotel2️⃣ Then inside the hotel document populate owner
+        path: "hotel", //get hotel data
+        populate: {
+          path: "owner",
+          select: "image", //Only return the image field from the owner.
+        },
+      })
+      .sort({ createdAt: -1 });
+    res.json({ success: true, rooms });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
+
 //api to update room
 export const updateRoom = async (req, res) => {
   try {
-    const { roomId, roomType, pricePerNight, amenities } = req.body;
+    const { roomId, roomType, pricePerNight, amenities ,isFeatured } = req.body;
 
     const room = await Room.findById(roomId);
     if (!room)
@@ -86,6 +109,8 @@ export const updateRoom = async (req, res) => {
     room.roomType = roomType ?? room.roomType;
     room.pricePerNight = pricePerNight ?? room.pricePerNight;
     room.amenities = amenities ? JSON.parse(amenities) : room.amenities;
+    room.isFeatured = JSON.parse(isFeatured ?? "false");
+    
 
     // Update images if uploaded
     if (req.files && req.files.length > 0) {

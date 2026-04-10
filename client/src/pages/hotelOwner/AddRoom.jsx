@@ -10,7 +10,7 @@ import { buildRoomFormData, validateRoomForm } from '../../utils/room'
 
 const AddRoom = () => {
 
-  const { getToken, axios } = useAppContext();
+  const { getToken, axios, currency } = useAppContext();
   const initialInputs = {
     roomType: '',
     pricePerNight: 0,
@@ -19,7 +19,8 @@ const AddRoom = () => {
       'Free Breakfast': false,
       'Mountain View': false,
       'Pool Access': false
-    }
+    },
+    isFeatured: false
   };
 
   const initialImages = {
@@ -54,10 +55,11 @@ const AddRoom = () => {
       const formData = buildRoomFormData(inputs, images);
 
       const { data } = await axios.post('/api/rooms/', formData, { headers: { Authorization: `Bearer ${await getToken()}` } });
+      console.log(formData);
       if (data.success) {
         toast.success(data.message);
         setInputs({ ...initialInputs, amenities: { ...initialInputs.amenities } });
-        setImages({ ...initialImages });//setInputs(initialImages)	❌ same reference → may not re-render
+        setImages({ ...initialImages });//setInputs(initialImages)	 same reference → may not re-render
 
       } else {
         toast.error(data.message);
@@ -72,11 +74,11 @@ const AddRoom = () => {
 
   }
   return (
-    <form onSubmit={onSubmitHandler}>
+    <form onSubmit={onSubmitHandler} className=''>
       <Title align='left' font='outfit' title='Add Room' subtitle='Fill in the details below to create a new room listing and make it available for booking.' />
       {/* upload area for images */}
       <p className='text-gray-800 mt-10'>Images</p>
-      <div className='grid grid-cols-2 sm:flex gap-4 my-2 flex-wrap'>
+      <div className='grid grid-cols-2 sm:flex gap-3 sm:gap-4 flex-wrap'>
         {Object.keys(images).map((key) => (
           <label htmlFor={`roomImage${key}`} key={key}>
             <img className='max-h-13 cursor-pointer opacity-80' src={images[key] ? URL.createObjectURL(images[key]) : assets.uploadArea} alt="" />
@@ -95,7 +97,7 @@ const AddRoom = () => {
       </p>
 
 
-      <div className='w-full flex max-sm:flex-col sm:gap-4 mt-4'>
+      <div className='w-full flex flex-col sm:flex-row gap-4 mt-4'>
         <div className="flex-1 max-w-48">
           <p className='mt-4 text-gray-800'>Room Type</p>
           <select
@@ -125,17 +127,31 @@ const AddRoom = () => {
 
           </select>
         </div>
-
-        <div className='flex-1 max-w-48'>
-          <p className='mt-4 text-gray-800'>
-            Price <span className='text-xs'>/night</span>
+        <div className="flex-1 max-w-48">
+          <p className="mt-4 text-gray-800">
+            Price <span className="text-xs">/night</span>
           </p>
-          <input type="number" placeholder='0' value={inputs.pricePerNight} className=" border opacity-70 border-gray-300 mt-1 rounded p-2 w-24" onChange={e => setInputs({ ...inputs, pricePerNight: e.target.value })} />
+
+          <div className="flex items-center border border-gray-300 mt-1 rounded px-2">
+            <input
+              type="number"
+              placeholder="0"
+              value={inputs.pricePerNight}
+              onChange={e =>
+                setInputs({ ...inputs, pricePerNight: e.target.value })
+              }
+              className="w-full p-2 outline-none"
+            />
+
+            <span className="text-gray-500 text-sm ml-2">
+              {currency}
+            </span>
+          </div>
         </div>
       </div>
 
       <p className='text-gray-800 mt-4'>Amenities</p>
-      <div className='flex flex-col flex-wrap mt-1 text-gray-400 max-w-sm'>
+      <div className='flex flex-col gap-2 mt-1 text-gray-400 max-w-sm'>
         {Object.keys(inputs.amenities)//['Free Wifi', 'Free Breakfast']
           .map((amenity, index) => (
 
@@ -161,7 +177,21 @@ const AddRoom = () => {
           ))}
 
       </div>
-      <button disabled={loading} className='bg-primary text-white px-8 py-2 rounded cursor-pointer  mt-8'>
+
+      <div className="flex items-center gap-2 mt-3">
+        <input
+          type="checkbox"
+          id="featured"
+          className="w-4 h-4"
+          checked={inputs.isFeatured}
+          onChange={e => setInputs({ ...inputs, isFeatured: e.target.checked })}
+        />
+
+        <label htmlFor="featured" className="text-gray-700">
+          Featured Room
+        </label>
+      </div>
+      <button disabled={loading} className='bg-primary text-white px-8 py-2 rounded mt-8 w-full sm:w-auto'>
         {loading ? 'Adding...' : 'Add Room'}
       </button>
     </form>

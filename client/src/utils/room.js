@@ -22,6 +22,7 @@ export const buildRoomFormData = (inputs, images) => {
 
   formData.append('roomType', inputs.roomType);
   formData.append('pricePerNight', inputs.pricePerNight);
+  formData.append('isFeatured',inputs.isFeatured);
 
   const amenities = getSelectedAmenities(inputs.amenities);
   formData.append('amenities', JSON.stringify(amenities));//Converts JavaScript object → JSON string ['Free Wifi', 'Pool Access'] => ["Free Wifi","Pool Access"]
