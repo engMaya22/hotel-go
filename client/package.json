@@ -12,6 +12,7 @@
     "@clerk/clerk-react": "^5.47.0",
     "@tailwindcss/vite": "^4.1.13",
     "axios": "^1.13.6",
+    "country-state-city": "^3.2.1",
     "lucide-react": "^1.7.0",
     "preact": "^10.27.0",
     "react-hot-toast": "^2.6.0",
