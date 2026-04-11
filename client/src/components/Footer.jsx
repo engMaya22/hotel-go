@@ -69,7 +69,8 @@ const Footer = () => {
       </div>
       <p className="py-4 text-center text-xs md:text-sm text-gray-500">
         Copyright {new Date().getFullYear()} ©{" "}
-        <a href="https://prebuiltui.com">PrebuiltUI</a>. All Rights Reserved.
+        {/* <a href="https://prebuiltui.com">PrebuiltUI</a> */}
+        . All Rights Reserved.
       </p>
     </div>
   );
