@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { assets, facilityIcons, roomsDummyData } from "../assets/assets";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import StarRating from "../components/StarRating";
@@ -32,9 +32,9 @@ const RadioButton = ({ label, selected = false, onChange = () => { } }) => {
   );
 };
 const AllRooms = () => {
-  const [searchParams, setSearchParams ] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { navigate, rooms, currency } = useAppContext();
- 
+
   const [openFilters, setOpenFilters] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState({
     roomType: [],
@@ -42,6 +42,13 @@ const AllRooms = () => {
 
   });
   const [selectedSort, setSelectedSort] = useState('');
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const roomsPerPage = 5; // 
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedFilters, selectedSort, searchParams]);
 
 
 
@@ -63,7 +70,7 @@ const AllRooms = () => {
     setSelectedFilters((previousFilters) => {
       const updatedFilters = { ...previousFilters };
       if (checked)//If checked → ADD
-       // updatedFilters[type].push(value); this make mutate state React prefers immutable updates because it can track changes efficiently.
+        // updatedFilters[type].push(value); this make mutate state React prefers immutable updates because it can track changes efficiently.
         updatedFilters[type] = [...updatedFilters[type], value];
       else
         updatedFilters[type] = updatedFilters[type].filter(item => item !== value);//If unchecked → REMOVE
@@ -82,7 +89,7 @@ const AllRooms = () => {
   //check if a room matches the selected room types
   const matchRoomType = (room) => {
     return selectedFilters.roomType.length === 0 // if no filter → show all
-    || selectedFilters.roomType.includes(room.roomType)
+      || selectedFilters.roomType.includes(room.roomType)
 
   }
 
@@ -112,7 +119,7 @@ const AllRooms = () => {
   //filter destination
   const filterDestination = (room) => {
     const destination = searchParams.get('destination');
-    console.log("destination is "); console.log( destination);
+    console.log("destination is "); console.log(destination);
     if (!destination) return true;
     return room.hotel.city.toLowerCase().includes(destination.toLowerCase());
 
@@ -123,6 +130,14 @@ const AllRooms = () => {
     return rooms.filter((room) => matchRoomType(room) && matchPriceRange(room) && filterDestination(room)).sort(sortRooms);
 
   }, [rooms, selectedFilters, selectedSort, searchParams]);
+
+  const totalPages = Math.ceil(filteredRooms.length / roomsPerPage);
+
+  const paginatedRooms = useMemo(() => {
+    const start = (currentPage - 1) * roomsPerPage;
+    const end = start + roomsPerPage;
+    return filteredRooms.slice(start, end);
+  }, [filteredRooms, currentPage]);
 
   //clear all filters 
   const clearAllFilters = () => {
@@ -136,6 +151,7 @@ const AllRooms = () => {
   }
 
   return (
+    <>
     <div className="flex flex-col-reverse lg:flex-row items-start  justify-between  pt-28 md:pt-35 px-4 md:px-16 lg:px-24 xl:px-32">
       <div>
         <div className="text-left flex flex-col items-start">
@@ -145,8 +161,8 @@ const AllRooms = () => {
             enhance your stay and create unforgettable memories.{" "}
           </p>
         </div>
-        {filteredRooms.map((room) => (
-          
+        {paginatedRooms.map((room) => (
+
           <div
             key={room._id}
             className="flex flex-col md:flex-row items-start py-10 gap-6 border-b border-gray-300 last:pb-30  last:border-0"
@@ -190,7 +206,7 @@ const AllRooms = () => {
                       src={facilityIcons[item]}
                       alt={item}
                       className="w-5 h-5"
-                     // onClick={console.log(facilityIcons[item])}
+                    // onClick={console.log(facilityIcons[item])}
                     />
                     <p className="text-xs">{item}</p>
                   </div>
@@ -203,6 +219,8 @@ const AllRooms = () => {
           </div>
         ))}
       </div>
+
+     
 
       {/* filters */}
 
@@ -230,24 +248,57 @@ const AllRooms = () => {
           <div className="px-5 pt-5">
             <p className="pb-2 text-gray-800 font-medium">Popular filters</p>
             {roomTypes.map((room, index) => (
-              <CheckBox key={index} label={room} selected={selectedFilters.roomType.includes(room)} onChange={(checked)=>handleFilterChange(checked ,room,'roomType')}/>
+              <CheckBox key={index} label={room} selected={selectedFilters.roomType.includes(room)} onChange={(checked) => handleFilterChange(checked, room, 'roomType')} />
             ))}
           </div>
           <div className="px-5 pt-5">
             <p className="pb-2 text-gray-800 font-medium">Price Range</p>
             {priceRanges.map((range, index) => (
-              <CheckBox key={index} label={`${currency} ${range}`} selected={selectedFilters.priceRanges.includes(range)}  onChange={(checked)=>handleFilterChange(checked ,range,'priceRanges')}/>
+              <CheckBox key={index} label={`${currency} ${range}`} selected={selectedFilters.priceRanges.includes(range)} onChange={(checked) => handleFilterChange(checked, range, 'priceRanges')} />
             ))}
           </div>
           <div className="px-5 pt-5 pb-7">
             <p className="pb-2 text-gray-800 font-medium">Sort By</p>
             {sortOptions.map((option, index) => (
-              <RadioButton key={index} label={option} selected ={selectedSort === option}  onChange={()=>handleSortChange(option)}/>
+              <RadioButton key={index} label={option} selected={selectedSort === option} onChange={() => handleSortChange(option)} />
             ))}
           </div>
         </div>
       </div>
+
+      
     </div>
+
+{/* pagination */}
+     <div className="flex justify-center items-center gap-2 my-4 flex-wrap">
+        <button
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(prev => prev - 1)}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Prev
+        </button>
+
+        {[...Array(totalPages)].map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentPage(index + 1)}
+            className={`px-3 py-1 border rounded ${currentPage === index + 1 ? "bg-blue-500 text-white" : ""
+              }`}
+          >
+            {index + 1}
+          </button>
+        ))}
+
+        <button
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage(prev => prev + 1)}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
+      </>
   );
 };
 
